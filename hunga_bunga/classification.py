@@ -46,21 +46,21 @@ from params import *
 def warn(*args, **kwargs):
     pass
 
-warnings.warn = warn
+
 
 linear_models_n_params = [
-    # (SGDClassifier,
-    #  {'loss'   : ['hinge', 'log', 'modified_huber', 'squared_hinge'],
-    #   'alpha'  : [0.0001, 0.001, 0.1],
-    #   'penalty': penalty_12none
-    #   })
-    #   ,
-    #
-    # (LogisticRegression,
-    #  {'penalty': penalty_12, 'max_iter': max_iter, 'tol': tol,  'warm_start': warm_start, 'C':C, 'solver': ['liblinear']
-    #   })
-    #   ,
-    #
+    (SGDClassifier,
+     {'loss'   : ['hinge', 'log', 'modified_huber', 'squared_hinge'],
+      'alpha'  : [0.0001, 0.001, 0.1],
+      'penalty': penalty_12none
+      })
+      ,
+
+    (LogisticRegression,
+     {'penalty': penalty_12, 'max_iter': max_iter, 'tol': tol,  'warm_start': warm_start, 'C':C, 'solver': ['liblinear']
+      })
+      ,
+
     (Perceptron,
      {'penalty': penalty_all, 'alpha': alpha, 'max_iter': n_iter, 'n_iter_no_change':[10], 'eta0': eta0, 'warm_start': warm_start
       })
@@ -327,32 +327,35 @@ class HungaBungaRandomClassifier(ClassifierMixin):
 
 
 if __name__ == '__main__':
+    warnings.warn = warn
     iris = datasets.load_iris()
     X, y = iris.data, iris.target
     clf = HungaBungaClassifier( brain  =False
                                ,small  =False
-                               ,verbose=False
-                               ##,scoring='accuracy'
-                                ,n_splits=2
-                                #,verbose=True#sklearn.exceptions.NotFittedError: This Perceptron instance is not fitted yet
+                               ,verbose=False#if True#sklearn.exceptions.NotFittedError: This Perceptron instance is not fitted yet
+                               ,n_splits=2
+                                ##,scoring='accuracy'
+
 
                                 )
     clf.fit(X, y)
     print(clf.predict(X).shape)
     ''' large
-    ========================================================================    
+    ========================================================================
     Model                          accuracy    Time/grid (s)    Time/clf (s)
     ---------------------------  ----------  ---------------  --------------
-    Perceptron                        0.983           10.840          10.840
-    PassiveAggressiveClassifier       0.983            0.331           0.331
-    GaussianProcessClassifier         0.917            7.290           7.290
-    KMeans                            0.850            0.352           0.352
-    KNeighborsClassifier              0.950            7.814           7.814
-    NearestCentroid                   0.933            0.093           0.093
-    RadiusNeighborsClassifier         0.967           13.861          13.861
-    DecisionTreeClassifier            1                1.408           1.408
+    SGDClassifier                     0.983            3.099           3.099
+    LogisticRegression                0.95             0.278           0.278
+    Perceptron                        0.917            4.183           4.183
+    PassiveAggressiveClassifier       0.967            0.329           0.329
+    GaussianProcessClassifier         0.933            7.454           7.454
+    KMeans                            0.533            0.344           0.344
+    KNeighborsClassifier              1               13.726          13.726
+    NearestCentroid                   0.95             0.103           0.103
+    RadiusNeighborsClassifier         0.967           14.211          14.211
+    DecisionTreeClassifier            1                1.441           1.441
     ========================================================================
-    The winner is: DecisionTreeClassifier with score 1.000.
+    The winner is: KNeighborsClassifier with score 1.000.
     
     
     small
@@ -375,7 +378,5 @@ if __name__ == '__main__':
     ========================================================================
     The winner is: KNeighborsClassifier with score 1.000.
     '''
-
-
 
 
