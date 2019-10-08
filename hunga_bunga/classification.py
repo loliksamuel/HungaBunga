@@ -340,9 +340,9 @@ if __name__ == '__main__':
                                 )
     clf.fit(X, y)
     print(clf.predict(X).shape)
-    ''' large
+    ''' 
     ========================================================================
-    Model                          accuracy    Time/grid (s)    Time/clf (s)
+    Model  large                  accuracy    Time/grid (s)    Time/clf (s)
     ---------------------------  ----------  ---------------  --------------
     SGDClassifier                     0.983            3.099           3.099
     LogisticRegression                0.95             0.278           0.278
@@ -358,9 +358,9 @@ if __name__ == '__main__':
     The winner is: KNeighborsClassifier with score 1.000.
     
     
-    small
+     
     ========================================================================
-    Model                          accuracy    Time/grid (s)    Time/clf (s)
+    Model   small                  accuracy    Time/grid (s)    Time/clf (s)
     ---------------------------  ----------  ---------------  --------------
     Perceptron                        0.95             6.853           6.853
     PassiveAggressiveClassifier       0.967            0.307           0.307
