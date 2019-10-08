@@ -1,9 +1,6 @@
 
-import random
 import warnings
-
 from sklearn.utils.testing import ignore_warnings
-
 warnings.filterwarnings('ignore')
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.simplefilter  ("ignore", category=PendingDeprecationWarning)
@@ -16,8 +13,10 @@ warnings.filterwarnings('ignore', message='ConvergenceWarning: Maximum number of
 warnings.filterwarnings('ignore', message='UserWarning: Averaging for metrics other.*')
 warnings.filterwarnings("ignore")
 
-from time import sleep
-import numpy as np
+from os import path
+import pandas as pd
+import random
+from utils import data_prepare
 from sklearn import datasets
 from sklearn.linear_model import SGDClassifier, LogisticRegression, Perceptron, PassiveAggressiveClassifier
 from sklearn.preprocessing import StandardScaler
@@ -43,8 +42,8 @@ from core import *
 from params import *
 
 
-def warn(*args, **kwargs):
-    pass
+# def warn(*args, **kwargs):
+#     pass
 
 
 
@@ -253,7 +252,7 @@ tree_models_n_params_small = [
 
 
 
-@ignore_warnings
+#@ignore_warnings
 def run_all_classifiers(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True):
     all_params = (linear_models_n_params_small if small else linear_models_n_params) +  (nn_models_n_params_small if small else nn_models_n_params) + (gaussianprocess_models_n_params if small else gaussianprocess_models_n_params) + neighbor_models_n_params + (svm_models_n_params_small if small else svm_models_n_params) + (tree_models_n_params_small if small else tree_models_n_params)
     return main_loop(all_params, StandardScaler().fit_transform(x) if normalize_x else x, y, isClassification=True, n_jobs=n_jobs, verbose=verbose, brain=brain, test_size=test_size, n_splits=n_splits, upsample=upsample, scoring=scoring, grid_search=grid_search)
@@ -294,7 +293,7 @@ class HungaBungaClassifier(ClassifierMixin):
 
     def fit(self, x, y):
         self.model = run_all_classifiers(x, y, small = self.small, normalize_x=self.normalize_x, test_size=self.test_size, n_splits=self.n_splits, upsample=self.upsample, scoring=self.scoring, verbose=self.verbose, brain=self.brain, n_jobs=self.n_jobs, grid_search=self.grid_search)[0]
-        sleep(1)
+        #sleep(1)
         return self
 
     def predict(self, x):
@@ -326,18 +325,57 @@ class HungaBungaRandomClassifier(ClassifierMixin):
         return self.model.predict(x)
 
 
+
+
 if __name__ == '__main__':
     warnings.warn = warn
-    iris = datasets.load_iris()
-    X, y = iris.data, iris.target
-    clf = HungaBungaClassifier( brain  =False
-                               ,small  =False
-                               ,verbose=False#if True#sklearn.exceptions.NotFittedError: This Perceptron instance is not fitted yet
-                               ,n_splits=2
-                                ##,scoring='accuracy'
+    data_type = 'spy71' #spy71  spy283   spyp71  spyp283  iris  random
+    names_output = ['Green bar', 'Red Bar']
+    size_output  = len(names_output)
+    use_raw_data = True
+    use_feature_tool=False
+    test_size  = 0.2
+    data_path_all = path.join('files', 'input', f'{data_type}')
+    if (use_raw_data):
+        print(f'Loading from disc raw data   ')
+        df_x, df_y = data_prepare(data_type='iris', use_feature_tool=use_feature_tool)
 
+        if isinstance(df_x,  pd.DataFrame):
+            df_x.to_csv( f'{data_path_all}_x_{use_feature_tool}.csv', index=False, header=True)
+            df_y.to_csv( f'{data_path_all}_y_{use_feature_tool}.csv', index=False, header=True)
+
+    else:
+        print(f'Loading from disc prepared data :{data_path_all + "_x.csv"} ')
+        df_x = pd.read_csv(f'{data_path_all}_x_{use_feature_tool}.csv')
+        df_y = pd.read_csv(f'{data_path_all}_y_{use_feature_tool}.csv')
+
+    if isinstance(df_y,  pd.DataFrame):
+        names_output = df_y['target'].unique()
+    else:
+        names_output = pd.Series(df_y, name='target').unique()#df_y.unique()#list(iris.target_names)
+    names_input  = df_x.columns.tolist()
+    names_input  = list(map(str, names_input))
+    size_input   = len(names_input)
+    size_output  = len(names_output)
+    print(f'#features={size_input}, out={size_output}, names out={names_output }')
+    print(f'df_y.describe()=\n{df_y.describe()}')
+    print(f'\ndf_y[5]={df_y.shape}\n',df_y.head(5))
+    print(f'\ndf_x[1]={df_x.shape}\n',df_x.head(1))
+
+
+    #iris = datasets.load_iris()
+    X, y = df_x, df_y#iris.data, iris.target
+    clf = HungaBungaClassifier( brain      =True
+                               ,small      =True
+                               ,normalize_x=True
+                               ,upsample   =True
+                               ,scoring    =None
+                               ,verbose    =False#if True#sklearn.exceptions.NotFittedError: This Perceptron instance is not fitted yet
+                               ,n_splits   =2
+                               ,test_size  =test_size
 
                                 )
+
     clf.fit(X, y)
     print(clf.predict(X).shape)
     ''' 

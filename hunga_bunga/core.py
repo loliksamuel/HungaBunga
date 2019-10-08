@@ -2,10 +2,11 @@
 import warnings
 warnings.filterwarnings('ignore')
 
-import sklearn.model_selection
+
 import numpy as np
 nan = float('nan')
 import traceback
+
 
 from pprint import pprint
 from collections import Counter
@@ -15,6 +16,7 @@ from tabulate import tabulate
 try: from tqdm import tqdm
 except: tqdm = lambda x: x
 
+import sklearn.model_selection
 from sklearn.cluster import KMeans
 from sklearn.model_selection import StratifiedShuffleSplit as sss, ShuffleSplit as ss, GridSearchCV, TimeSeriesSplit
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, ExtraTreesClassifier, ExtraTreesRegressor, AdaBoostClassifier, AdaBoostRegressor
@@ -73,10 +75,13 @@ def upsample_indices_clf(inds, y):
 
 
 def cv_clf(x, y, test_size = 0.2, n_splits = 5, random_state=None, doesUpsample = True):
-    #ts_obj  = TimeSeriesSplit(n_splits=n_splits, max_train_size=test_size).split(x,y)
-    sss_obj = sss            (n_splits=n_splits, test_size=test_size, random_state=random_state).split(x, y)
-    if not doesUpsample: yield sss_obj
-    for train_inds, valid_inds in sss_obj: yield (upsample_indices_clf(train_inds, y[train_inds]), valid_inds)
+    #splitter  = TimeSeriesSplit(n_splits=n_splits, max_train_size=None).split(x)
+    splitter   = sss            (n_splits=n_splits, test_size=  test_size, random_state=random_state).split(x, y)
+    if not doesUpsample:
+        yield splitter
+    for train_index, test_index in splitter:#for train_index, test_index in sss.split(X, y):
+        #for train_index, test_index in tscv.split(X):
+        yield (upsample_indices_clf(train_index, y[train_index]), test_index)
 
 
 def cv_reg(x, test_size = 0.2, n_splits = 5, random_state=None): return ss(n_splits, test_size, random_state=random_state).split(x)
@@ -130,7 +135,6 @@ def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits
     print(tabulate([[m.__class__.__name__, '%.3f'%s, '%.3f'%t, '%.3f'%t] for m, s, t, tt in res], headers=['Model', scoring, 'Time/grid (s)', 'Time/clf (s)']))
     winner_ind = np.argmax([v[1] for v in res])
     winner = res[winner_ind][0]
-    #if brain:
     print('='*72)
     print('The winner is: %s with score %0.3f.' % (winner.__class__.__name__, res[winner_ind][1]))
     return winner, res
