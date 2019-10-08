@@ -340,56 +340,42 @@ if __name__ == '__main__':
     clf.fit(X, y)
     print(clf.predict(X).shape)
     ''' large
-========================================================================    
-Model                          accuracy    Time/grid (s)    Time/clf (s)
----------------------------  ----------  ---------------  --------------
-Perceptron                        0.983           10.840          10.840
-PassiveAggressiveClassifier       0.983            0.331           0.331
-GaussianProcessClassifier         0.917            7.290           7.290
-KMeans                            0.850            0.352           0.352
-KNeighborsClassifier              0.950            7.814           7.814
-NearestCentroid                   0.933            0.093           0.093
-RadiusNeighborsClassifier         0.967           13.861          13.861
-DecisionTreeClassifier            1                1.408           1.408
-========================================================================
-The winner is: DecisionTreeClassifier with score 1.000.
-
-
-small
-========================================================================
-Model                          accuracy    Time/grid (s)    Time/clf (s)
----------------------------  ----------  ---------------  --------------
-Perceptron                        0.95             6.853           6.853
-PassiveAggressiveClassifier       0.967            0.307           0.307
-MLPClassifier                     0.95             1.358           1.358
-GaussianProcessClassifier         0.933            6.452           6.452
-KMeans                            0.783            0.344           0.344
-KNeighborsClassifier              1                7.601           7.601
-NearestCentroid                   0.933            0.102           0.102
-RadiusNeighborsClassifier         1               13.969          13.969
-SVC                               0.983           70.019          70.019
-LinearSVC                         0.967            0.271           0.271
-RandomForestClassifier            1               14.333          14.333
-DecisionTreeClassifier            0.95             0.104           0.104
-ExtraTreesClassifier              1               11              11
-========================================================================
-The winner is: KNeighborsClassifier with score 1.000.
+    ========================================================================    
+    Model                          accuracy    Time/grid (s)    Time/clf (s)
+    ---------------------------  ----------  ---------------  --------------
+    Perceptron                        0.983           10.840          10.840
+    PassiveAggressiveClassifier       0.983            0.331           0.331
+    GaussianProcessClassifier         0.917            7.290           7.290
+    KMeans                            0.850            0.352           0.352
+    KNeighborsClassifier              0.950            7.814           7.814
+    NearestCentroid                   0.933            0.093           0.093
+    RadiusNeighborsClassifier         0.967           13.861          13.861
+    DecisionTreeClassifier            1                1.408           1.408
+    ========================================================================
+    The winner is: DecisionTreeClassifier with score 1.000.
+    
+    
+    small
+    ========================================================================
+    Model                          accuracy    Time/grid (s)    Time/clf (s)
+    ---------------------------  ----------  ---------------  --------------
+    Perceptron                        0.95             6.853           6.853
+    PassiveAggressiveClassifier       0.967            0.307           0.307
+    MLPClassifier                     0.95             1.358           1.358
+    GaussianProcessClassifier         0.933            6.452           6.452
+    KMeans                            0.783            0.344           0.344
+    KNeighborsClassifier              1                7.601           7.601
+    NearestCentroid                   0.933            0.102           0.102
+    RadiusNeighborsClassifier         1               13.969          13.969
+    SVC                               0.983           70.019          70.019
+    LinearSVC                         0.967            0.271           0.271
+    RandomForestClassifier            1               14.333          14.333
+    DecisionTreeClassifier            0.95             0.104           0.104
+    ExtraTreesClassifier              1               11              11
+    ========================================================================
+    The winner is: KNeighborsClassifier with score 1.000.
     '''
 
 
 
-    #     # ---------- Getting The Data ----------
-    # from regression import gen_reg_data
-    #
-    # iris = datasets.load_iris()
-    # X_c, y_c = iris.data, iris.target
-    # X_r, y_r = gen_reg_data(10, 3, 100, 3, sum, 0.3)
-    #
-    #
-    #
-    # # ---------- Brute-Force Classification ----------
-    #
-    # clf = HungaBungaClassifier()
-    # clf.fit(X_c, y_c)
-    # print(clf.predict(X_c))
 
