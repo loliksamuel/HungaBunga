@@ -1,17 +1,17 @@
 
-import warnings
-from sklearn.utils.testing import ignore_warnings
-warnings.filterwarnings('ignore')
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-warnings.simplefilter  ("ignore", category=PendingDeprecationWarning)
-warnings.simplefilter  ("ignore", category=UserWarning)
-warnings.filterwarnings("ignore", category=UserWarning)
-warnings.filterwarnings("ignore", category=Warning)
-warnings.filterwarnings("ignore", category = RuntimeWarning)
-warnings.filterwarnings('ignore', message='Solver terminated early.*')
-warnings.filterwarnings('ignore', message='ConvergenceWarning: Maximum number of iteration reached.*')
-warnings.filterwarnings('ignore', message='UserWarning: Averaging for metrics other.*')
-warnings.filterwarnings("ignore")
+# import warnings
+# from sklearn.utils.testing import ignore_warnings
+# warnings.filterwarnings('ignore')
+# warnings.filterwarnings("ignore", category=DeprecationWarning)
+# warnings.simplefilter  ("ignore", category=PendingDeprecationWarning)
+# warnings.simplefilter  ("ignore", category=UserWarning)
+# warnings.filterwarnings("ignore", category=UserWarning)
+# warnings.filterwarnings("ignore", category=Warning)
+# warnings.filterwarnings("ignore", category = RuntimeWarning)
+# warnings.filterwarnings('ignore', message='Solver terminated early.*')
+# warnings.filterwarnings('ignore', message='ConvergenceWarning: Maximum number of iteration reached.*')
+# warnings.filterwarnings('ignore', message='UserWarning: Averaging for metrics other.*')
+# warnings.filterwarnings("ignore")
 
 from os import path
 import pandas as pd
@@ -328,8 +328,8 @@ class HungaBungaRandomClassifier(ClassifierMixin):
 
 
 if __name__ == '__main__':
-    warnings.warn = warn
-    data_type = 'spy71' #spy71  spy283   spyp71  spyp283  iris  random
+    #warnings.warn = warn
+    data_type = 'random' #spy71  spy283   spyp71  spyp283  iris  random
     names_output = ['Green bar', 'Red Bar']
     size_output  = len(names_output)
     use_raw_data = True
@@ -338,7 +338,7 @@ if __name__ == '__main__':
     data_path_all = path.join('files', 'input', f'{data_type}')
     if (use_raw_data):
         print(f'Loading from disc raw data   ')
-        df_x, df_y = data_prepare(data_type='iris', use_feature_tool=use_feature_tool)
+        df_x, df_y = data_prepare(data_type=data_type, use_feature_tool=use_feature_tool)
 
         if isinstance(df_x,  pd.DataFrame):
             df_x.to_csv( f'{data_path_all}_x_{use_feature_tool}.csv', index=False, header=True)
