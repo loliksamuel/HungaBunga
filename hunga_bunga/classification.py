@@ -274,6 +274,7 @@ class HungaBungaClassifier(ClassifierMixin):
                  , upsample=True
                  , verbose=False
                  , brain=False
+                 , small = True
                  , n_jobs =cpu_count() - 1
                  , random_state=None
                  ):
@@ -288,10 +289,11 @@ class HungaBungaClassifier(ClassifierMixin):
         self.n_jobs = n_jobs
         self.normalize_x = normalize_x
         self.grid_search = grid_search
+        self.small = small
         super(HungaBungaClassifier, self).__init__()
 
     def fit(self, x, y):
-        self.model = run_all_classifiers(x, y, small = True, normalize_x=self.normalize_x, test_size=self.test_size, n_splits=self.n_splits, upsample=self.upsample, scoring=self.scoring, verbose=self.verbose, brain=self.brain, n_jobs=self.n_jobs, grid_search=self.grid_search)[0]
+        self.model = run_all_classifiers(x, y, small = self.small, normalize_x=self.normalize_x, test_size=self.test_size, n_splits=self.n_splits, upsample=self.upsample, scoring=self.scoring, verbose=self.verbose, brain=self.brain, n_jobs=self.n_jobs, grid_search=self.grid_search)[0]
         sleep(1)
         return self
 
@@ -327,27 +329,30 @@ class HungaBungaRandomClassifier(ClassifierMixin):
 if __name__ == '__main__':
     iris = datasets.load_iris()
     X, y = iris.data, iris.target
-    clf = HungaBungaClassifier( brain=False
+    clf = HungaBungaClassifier( brain  =False
+                               ,small  =False
+                               ,verbose=False
                                ##,scoring='accuracy'
                                 ,n_splits=2
                                 #,verbose=True#sklearn.exceptions.NotFittedError: This Perceptron instance is not fitted yet
-                                ,verbose=False
+
                                 )
     clf.fit(X, y)
     print(clf.predict(X).shape)
     ''' large
-    Model                          accuracy    Time/clf (s)
----------------------------  ----------  --------------
-GaussianProcessClassifier         0.947           0.725
-Perceptron                        0.933           0.006
-PassiveAggressiveClassifier       0.967           0.003
-KMeans                            0.347           0.032
-KNeighborsClassifier              0.96            0.001
-NearestCentroid                   0.933           0.001
-RadiusNeighborsClassifier         0.953           0.001
-DecisionTreeClassifier            0.967           0.001
-============================================================
-The winner is: PassiveAggressiveClassifier with score 0.967.
+========================================================================    
+Model                          accuracy    Time/grid (s)    Time/clf (s)
+---------------------------  ----------  ---------------  --------------
+Perceptron                        0.983           10.840          10.840
+PassiveAggressiveClassifier       0.983            0.331           0.331
+GaussianProcessClassifier         0.917            7.290           7.290
+KMeans                            0.850            0.352           0.352
+KNeighborsClassifier              0.950            7.814           7.814
+NearestCentroid                   0.933            0.093           0.093
+RadiusNeighborsClassifier         0.967           13.861          13.861
+DecisionTreeClassifier            1                1.408           1.408
+========================================================================
+The winner is: DecisionTreeClassifier with score 1.000.
 
 
 small
