@@ -329,11 +329,11 @@ class HungaBungaRandomClassifier(ClassifierMixin):
 
 if __name__ == '__main__':
     #warnings.warn = warn
-    data_type = 'random' #spy71  spy283   spyp71  spyp283  iris  random
-    names_output = ['Green bar', 'Red Bar']
-    size_output  = len(names_output)
-    use_raw_data = True
-    use_feature_tool=False
+    data_type       = 'spy283' #spy71  spy283   spyp71  spyp283  iris  random
+    names_output    = ['Green bar', 'Red Bar']
+    size_output     = len(names_output)
+    use_raw_data    = True
+    use_feature_tool= False
     test_size  = 0.2
     data_path_all = path.join('files', 'input', f'{data_type}')
     if (use_raw_data):
