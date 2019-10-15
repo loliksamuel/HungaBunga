@@ -19,7 +19,7 @@ import random
 from utils import data_prepare
 from sklearn import datasets
 from sklearn.linear_model import SGDClassifier, LogisticRegression, Perceptron, PassiveAggressiveClassifier
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.svm import SVC, LinearSVC, NuSVC
 from sklearn.cluster import KMeans
@@ -96,21 +96,29 @@ svm_models_n_params = [
 ]
 
 svm_models_n_params_small = [
-     (SVC,
-      {'C':C, 'kernel': kernel, 'degree': degree, 'gamma': gamma, 'coef0': coef0, 'shrinking': shrinking, 'tol': tol, 'max_iter': max_iter_inf2})
-    ,
-    #error: very slow
-    # (NuSVC,
-    #  {'nu': nu, 'kernel': kernel, 'degree': degree, 'gamma': gamma, 'coef0': coef0, 'shrinking': shrinking, 'tol': tol
-    #   }
+    #  (SVC,
+    #   {   'C'       :C
+    #   , 'tol'       : tol
+    #   , 'max_iter'  : max_iter_inf2
+    #   , 'kernel'    : kernel
+    #   , 'degree'    : degree
+    #   , 'gamma'     : gamma
+    #   , 'coef0'     : coef0
+    #   , 'shrinking' : shrinking
+    #    })
     # ,
-    (LinearSVC,
-     { 'C'       : C
-     , 'penalty' : penalty_12
-     , 'tol'     : tol
-     , 'max_iter': max_iter
-     , 'loss'    : ['hinge', 'squared_hinge']
-       })
+    # #error: very slow
+    # # (NuSVC,
+    # #  {'nu': nu, 'kernel': kernel, 'degree': degree, 'gamma': gamma, 'coef0': coef0, 'shrinking': shrinking, 'tol': tol
+    # #   }
+    # # ,
+    # (LinearSVC,
+    #  { 'C'       : C
+    #  , 'tol'     : tol
+    #  , 'max_iter': max_iter
+    #  , 'loss'    : ['hinge', 'squared_hinge']
+    #  , 'penalty' : penalty_12
+    #    })
 ]
 
 neighbor_models_n_params = [
@@ -121,28 +129,28 @@ neighbor_models_n_params = [
     ,
 
     (KNeighborsClassifier,
-     {'n_neighbors' : n_neighbors
-       , 'algorithm': neighbor_algo
-       , 'leaf_size': neighbor_leaf_size
-       , 'metric'   : neighbor_metric
-       , 'weights'  : ['uniform', 'distance']
-       ,'p'         : [1, 2]
+       { 'metric'     : neighbor_metric
+       , 'weights'    : ['uniform', 'distance']
+       , 'algorithm'  : neighbor_algo
+       , 'leaf_size'  : neighbor_leaf_size
+       , 'p'          : [1, 2]
+       , 'n_neighbors': n_neighbors
       })
     ,
     (NearestCentroid,
-     {'metric'          : neighbor_metric,
-      'shrink_threshold': [1e-3, 1e-2, 0.1, 0.5, 0.9, 2]
+     {  'metric'          : neighbor_metric
+      , 'shrink_threshold': [1e-3, 1e-2, 0.1, 0.5, 0.9, 2]
       })
     ,
-
     (RadiusNeighborsClassifier,
-     {'radius'            : neighbor_radius
+     {
+           'metric'       : neighbor_metric
+         , 'weights'      : ['uniform', 'distance']
          , 'algorithm'    : neighbor_algo
          , 'leaf_size'    : neighbor_leaf_size
-         , 'metric'       : neighbor_metric
-         , 'weights'      : ['uniform', 'distance']
          , 'p'            : [1, 2]
          , 'outlier_label': [-1]
+         , 'radius'       : neighbor_radius
       })
 ]
 
@@ -190,26 +198,26 @@ nn_models_n_params_small = [
 tree_models_n_params = [
     #error: very slow
     # (RandomForestClassifier,
-    #  {'criterion'           : ['gini', 'entropy'],
-    #   'max_features'        : max_features,
-    #   'n_estimators'        : n_estimators,
-    #   'max_depth'           : max_depth,
-    #   'min_samples_split'   : min_samples_split,
-    #   #'min_impurity_split'  : min_impurity_split
-    #   'min_impurity_decrease'  : min_impurity_split
+    #  {
+    #     'max_features'        : max_features
+    #   , 'max_depth'           : max_depth
+    #   , 'min_samples_split'   : min_samples_split
+    #   , 'min_samples_leaf': min_samples_leaf
+    #  #, 'min_impurity_split'  : min_impurity_split
+    #   , 'min_impurity_decrease'  : min_impurity_split
+    #   , 'n_estimators'        : n_estimators
     #   , 'warm_start': warm_start
-    #   , 'min_samples_leaf': min_samples_leaf,
+    #   , 'criterion'           : ['gini', 'entropy']
     #   })
     #   ,
-
     (DecisionTreeClassifier,
-     {    'criterion'           : ['gini', 'entropy']
-         , 'max_features'       : max_features
-         , 'max_depth'          : max_depth
-         , 'min_samples_split'  : min_samples_split
-    #  , 'min_impurity_split':min_impurity_split
-      , 'min_impurity_decrease' :min_impurity_split
+     {  'max_features'          : max_features
+      , 'max_depth'             : max_depth
+      , 'min_samples_split'     : min_samples_split
       , 'min_samples_leaf'      : min_samples_leaf
+    # , 'min_impurity_split':min_impurity_split
+      , 'min_impurity_decrease' :min_impurity_split
+      , 'criterion'             : ['gini', 'entropy']
       })
     #,
     #error:very slow
@@ -228,34 +236,43 @@ tree_models_n_params = [
 tree_models_n_params_small = [
 
     (RandomForestClassifier,
-     {     'max_features'      : max_features_small
-         , 'n_estimators'      : n_estimators_small
-         , 'min_samples_split' : min_samples_split
-         , 'max_depth'         : max_depth_small
-         , 'min_samples_leaf'  : min_samples_leaf
-      })
+     { 'max_features'      : max_features_small
+     , 'max_depth'         : max_depth_small
+     , 'min_samples_split' : min_samples_split
+     , 'min_samples_leaf'  : min_samples_leaf
+     , 'n_estimators'      : n_estimators_small
+     })
     ,
-
-
     (DecisionTreeClassifier,
-     {'max_features': max_features_small, 'max_depth': max_depth_small, 'min_samples_split': min_samples_split, 'min_samples_leaf': min_samples_leaf
-      })
+     {'max_features'     : max_features_small
+    , 'max_depth'        : max_depth_small
+    , 'min_samples_split': min_samples_split
+    , 'min_samples_leaf' : min_samples_leaf
+     })
     ,
-
     (ExtraTreesClassifier,
-     {'n_estimators'      : n_estimators_small
-     , 'max_features'     : max_features_small
+     { 'max_features'     : max_features_small
      , 'max_depth'        : max_depth_small
      , 'min_samples_split': min_samples_split
-     , 'min_samples_leaf' : min_samples_leaf})
+     , 'min_samples_leaf' : min_samples_leaf
+     , 'n_estimators'     : n_estimators_small
+      })
 ]
 
 
 
 #@ignore_warnings
 def run_all_classifiers(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True):
-    all_params = (linear_models_n_params_small if small else linear_models_n_params) +  (nn_models_n_params_small if small else nn_models_n_params) + (gaussianprocess_models_n_params if small else gaussianprocess_models_n_params) + neighbor_models_n_params + (svm_models_n_params_small if small else svm_models_n_params) + (tree_models_n_params_small if small else tree_models_n_params)
-    return main_loop(all_params, StandardScaler().fit_transform(x) if normalize_x else x, y, isClassification=True, n_jobs=n_jobs, verbose=verbose, brain=brain, test_size=test_size, n_splits=n_splits, upsample=upsample, scoring=scoring, grid_search=grid_search)
+    all_params =    (   linear_models_n_params_small if small else linear_models_n_params) \
+                  + (       nn_models_n_params_small if small else     nn_models_n_params) \
+                  + (gaussianprocess_models_n_params if small else []) \
+                  + (       neighbor_models_n_params if small else []) \
+                  + (      svm_models_n_params_small if small else    svm_models_n_params) \
+                  + (     tree_models_n_params_small if small else   tree_models_n_params)
+    return main_loop(  all_params
+                     , StandardScaler().fit_transform(x) if normalize_x else x#MinMaxScaler().fit_transform(x)
+                     , y
+                     , isClassification=True, n_jobs=n_jobs, verbose=verbose, brain=brain, test_size=test_size, n_splits=n_splits, upsample=upsample, scoring=scoring, grid_search=grid_search)
 
 def run_one_classifier(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True):
     all_params = (linear_models_n_params_small if small else linear_models_n_params) +  (nn_models_n_params_small if small else nn_models_n_params) + ([] if small else gaussianprocess_models_n_params) + neighbor_models_n_params + (svm_models_n_params_small if small else svm_models_n_params) + (tree_models_n_params_small if small else tree_models_n_params)
@@ -329,92 +346,95 @@ class HungaBungaRandomClassifier(ClassifierMixin):
 
 if __name__ == '__main__':
     #warnings.warn = warn
-    data_type       = 'spy283' #spy71  spy283   spyp71  spyp283  iris  random
-    names_output    = ['Green bar', 'Red Bar']
-    size_output     = len(names_output)
-    use_raw_data    = True
-    use_feature_tool= False
+    # data_type       = 'spy283' #spy71  spy283   spyp71  spyp283  iris  random
+    # names_output    = ['Green bar', 'Red Bar']
+    # size_output     = len(names_output)
+    # use_raw_data    = True
+    # use_feature_tool= False
+
+    # data_path_all = path.join('files', 'input', f'{data_type}')
+    # if (use_raw_data):
+    #     print(f'Loading from disc raw data   ')
+    #     df_x, df_y = data_prepare(data_type=data_type, use_feature_tool=use_feature_tool)
+    #
+    #     if isinstance(df_x,  pd.DataFrame):
+    #         df_x.to_csv( f'{data_path_all}_x_{use_feature_tool}.csv', index=False, header=True)
+    #         df_y.to_csv( f'{data_path_all}_y_{use_feature_tool}.csv', index=False, header=True)
+    #
+    # else:
+    #     print(f'Loading from disc prepared data :{data_path_all + "_x.csv"} ')
+    #     df_x = pd.read_csv(f'{data_path_all}_x_{use_feature_tool}.csv')
+    #     df_y = pd.read_csv(f'{data_path_all}_y_{use_feature_tool}.csv')
+    #
+    # if isinstance(df_y,  pd.DataFrame):
+    #     names_output = df_y['target'].unique()
+    # else:
+    #     names_output = pd.Series(df_y, name='target').unique()#df_y.unique()#list(iris.target_names)
+    # names_input  = df_x.columns.tolist()
+    # names_input  = list(map(str, names_input))
+    # size_input   = len(names_input)
+    # size_output  = len(names_output)
+    # print(f'#features={size_input}, out={size_output}, names out={names_output }')
+    # print(f'df_y.describe()=\n{df_y.describe()}')
+    # print(f'\ndf_y[5]={df_y.shape}\n',df_y.head(5))
+    # print(f'\ndf_x[1]={df_x.shape}\n',df_x.head(1))
     test_size  = 0.2
-    data_path_all = path.join('files', 'input', f'{data_type}')
-    if (use_raw_data):
-        print(f'Loading from disc raw data   ')
-        df_x, df_y = data_prepare(data_type=data_type, use_feature_tool=use_feature_tool)
-
-        if isinstance(df_x,  pd.DataFrame):
-            df_x.to_csv( f'{data_path_all}_x_{use_feature_tool}.csv', index=False, header=True)
-            df_y.to_csv( f'{data_path_all}_y_{use_feature_tool}.csv', index=False, header=True)
-
-    else:
-        print(f'Loading from disc prepared data :{data_path_all + "_x.csv"} ')
-        df_x = pd.read_csv(f'{data_path_all}_x_{use_feature_tool}.csv')
-        df_y = pd.read_csv(f'{data_path_all}_y_{use_feature_tool}.csv')
-
-    if isinstance(df_y,  pd.DataFrame):
-        names_output = df_y['target'].unique()
-    else:
-        names_output = pd.Series(df_y, name='target').unique()#df_y.unique()#list(iris.target_names)
-    names_input  = df_x.columns.tolist()
-    names_input  = list(map(str, names_input))
-    size_input   = len(names_input)
-    size_output  = len(names_output)
-    print(f'#features={size_input}, out={size_output}, names out={names_output }')
-    print(f'df_y.describe()=\n{df_y.describe()}')
-    print(f'\ndf_y[5]={df_y.shape}\n',df_y.head(5))
-    print(f'\ndf_x[1]={df_x.shape}\n',df_x.head(1))
-
-
-    #iris = datasets.load_iris()
-    X, y = df_x, df_y#iris.data, iris.target
-    clf = HungaBungaClassifier( brain      =True
-                               ,small      =True
-                               ,normalize_x=True
-                               ,upsample   =True
-                               ,scoring    =None
-                               ,verbose    =False#if True#sklearn.exceptions.NotFittedError: This Perceptron instance is not fitted yet
-                               ,n_splits   =2
+    brain      =True
+    small      =False
+    normalize_x=True
+    upsample   =True
+    scoring    =None
+    verbose    =False#if True#sklearn.exceptions.NotFittedError: This Perceptron instance is not fitted yet
+    n_splits   =2
+    iris = datasets.load_iris()
+    X, y = iris.data, iris.target
+    # X, y = df_x, df_y
+    clf = HungaBungaClassifier( brain      =brain
+                               ,small      =small
+                               ,normalize_x=normalize_x
+                               ,upsample   =upsample
+                               ,scoring    =scoring
+                               ,verbose    =verbose
+                               ,n_splits   =n_splits
                                ,test_size  =test_size
 
                                 )
 
     clf.fit(X, y)
     print(clf.predict(X).shape)
+    print(f'brain      ={brain}  \nsmall      ={small} \nnormalize_x={normalize_x}  \nupsample   ={upsample} \nscoring    ={scoring}  \nverbose    ={verbose} \nn_splits   ={n_splits} \ntest_size  ={test_size}')
     ''' 
     ========================================================================
-    Model  large                  accuracy    Time/grid (s)    Time/clf (s)
+    Model large                    accuracy    Time/grid (s)    Time/clf (s)
     ---------------------------  ----------  ---------------  --------------
-    SGDClassifier                     0.983            3.099           3.099
-    LogisticRegression                0.95             0.278           0.278
-    Perceptron                        0.917            4.183           4.183
-    PassiveAggressiveClassifier       0.967            0.329           0.329
-    GaussianProcessClassifier         0.933            7.454           7.454
-    KMeans                            0.533            0.344           0.344
-    KNeighborsClassifier              1               13.726          13.726
-    NearestCentroid                   0.95             0.103           0.103
-    RadiusNeighborsClassifier         0.967           14.211          14.211
-    DecisionTreeClassifier            1                1.441           1.441
+    SGDClassifier                     1                3.122           0.003
+    LogisticRegression                0.9              0.248           0.001
+    Perceptron                        0.933            3.793           0.003
+    PassiveAggressiveClassifier       0.95             0.291           0.003
+    DecisionTreeClassifier            1                1.4             0.001
     ========================================================================
-    The winner is: KNeighborsClassifier with score 1.000.
+    The winner is: SGDClassifier with score 1.000.
     
     
      
     ========================================================================
-    Model   small                  accuracy    Time/grid (s)    Time/clf (s)
+    Model small                   accuracy    Time/grid (s)    Time/clf (s)
     ---------------------------  ----------  ---------------  --------------
-    Perceptron                        0.95             6.853           6.853
-    PassiveAggressiveClassifier       0.967            0.307           0.307
-    MLPClassifier                     0.95             1.358           1.358
-    GaussianProcessClassifier         0.933            6.452           6.452
-    KMeans                            0.783            0.344           0.344
-    KNeighborsClassifier              1                7.601           7.601
-    NearestCentroid                   0.933            0.102           0.102
-    RadiusNeighborsClassifier         1               13.969          13.969
-    SVC                               0.983           70.019          70.019
-    LinearSVC                         0.967            0.271           0.271
-    RandomForestClassifier            1               14.333          14.333
-    DecisionTreeClassifier            0.95             0.104           0.104
-    ExtraTreesClassifier              1               11              11
+    SGDClassifier                     0.521            4.806           0.003
+    LogisticRegression                0.521            0.374           0.001
+    Perceptron                        0.521            4.218           0.005
+    PassiveAggressiveClassifier       0.521            0.51            0.003
+    MLPClassifier                     0.522            2.065           0.098
+    GaussianProcessClassifier         0.520            9.41            0.801
+    KMeans                            0.481            0.429           0.048
+    KNeighborsClassifier              0.491           11.478           0.001
+    NearestCentroid                   0.501            0.202           0.001
+    RadiusNeighborsClassifier         0.521           21.517           0.003
+    RandomForestClassifier            0.512           29.453           0.007
+    DecisionTreeClassifier            0.505            0.218           0.001
+    ExtraTreesClassifier              0.520           20.067           0.024
     ========================================================================
-    The winner is: KNeighborsClassifier with score 1.000.
+    The winner is: PassiveAggressiveClassifier with score 1.000.
     '''
 
 

@@ -118,21 +118,21 @@ def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits
                 clf_search = GridSearchCVProgressBar(clf_Klass(), parameters, scoring, cv=cv_(), n_jobs=n_jobs)
             else:
                 clf_search = RandomizedSearchCVProgressBar(clf_Klass(), parameters, scoring, cv=cv_(), n_jobs=n_jobs)
-            timespent1 = timeit2(clf_search,x, y)
-            timespent2 = timeit(clf_Klass, clf_search.best_params_, x, y)
+            time_grid = timeit2(clf_search,x, y)
+            time_fit  = timeit(clf_Klass, clf_search.best_params_, x, y)
             if brain:
-                print('best score:', clf_search.best_score_, 'time/clf: %0.3f seconds' % timespent2)
+                print('best score:', clf_search.best_score_, 'time/clf: %0.3f seconds' % time_fit)
                 print('best params:')
                 pprint(clf_search.best_params_)
             if verbose:
                 print('validation scores:', clf_search.cv_results_['mean_test_score'])
                 print('training scores:'  , clf_search.cv_results_['mean_train_score'])
-            res.append((clf_search.best_estimator_, clf_search.best_score_, timespent1, timespent2))
+            res.append((clf_search.best_estimator_, clf_search.best_score_, time_grid, time_fit))
         except Exception as e:
             if verbose: traceback.print_exc()
             res.append((clf_Klass(), -np.inf, np.inf, np.inf))
     print('='*72)
-    print(tabulate([[m.__class__.__name__, '%.3f'%s, '%.3f'%t, '%.3f'%t] for m, s, t, tt in res], headers=['Model', scoring, 'Time/grid (s)', 'Time/clf (s)']))
+    print(tabulate([[m.__class__.__name__, '%.3f'%s, '%.3f'%time_grid, '%.3f'%time_fit] for m, s, time_grid, time_fit in res], headers=['Model', scoring, 'Time/grid (s)', 'Time/clf (s)']))
     winner_ind = np.argmax([v[1] for v in res])
     winner = res[winner_ind][0]
     print('='*72)

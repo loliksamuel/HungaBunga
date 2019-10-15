@@ -26,8 +26,7 @@ from scipy.stats import boxcox_normmax
 from sklearn.feature_selection import SelectFromModel
 from sklearn.metrics import confusion_matrix, roc_curve, roc_auc_score, accuracy_score, f1_score
 from sklearn.metrics import precision_recall_fscore_support as scorex
-from sklearn.preprocessing import StandardScaler
-from sklearn import preprocessing
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
 from sklearn.utils import resample
 
 from statsmodels.tsa.stattools import adfuller
@@ -559,9 +558,20 @@ def normalize3(x, axis):
     #x_norm = pd.DataFrame(x_norm, index=x.index, columns=x.columns)
     return x_norm
 
+#This scaler works better for cases in which the standard scaler might not work so well.
+# 1. If the distribution is not Gaussian
+# 2. If the standard deviation is very small
+#However, it is sensitive to outliers, so if there are outliers in the data, you might want to consider the Robust Scaler
 def normalize_min_max2(df)-> pd.DataFrame:
-    min_max_scaler = preprocessing.MinMaxScaler()
-    return min_max_scaler.transform(df)
+    scaler = MinMaxScaler()
+    return scaler.transform(df)
+
+#RobustScaler uses a similar method to the Min-Max scaler but it instead uses the interquartile range, rathar than the min-max, so that it is robust to outliers.
+def normalize_robust(df)-> pd.DataFrame:
+    scaler = RobustScaler()
+    return scaler.transform(df)
+
+
 
 def normalize_min_max(x):
     normalized = (x-min(x))/(max(x)-min(x))
