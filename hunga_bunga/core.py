@@ -132,7 +132,7 @@ def main_loop(models_n_params, x, y, isClassification, test_size = 0.2, n_splits
             if verbose: traceback.print_exc()
             res.append((clf_Klass(), -np.inf, np.inf, np.inf))
     print('='*72)
-    print(tabulate([[m.__class__.__name__, '%.3f'%s, '%.3f'%time_grid, '%.3f'%time_fit] for m, s, time_grid, time_fit in res], headers=['Model', scoring, 'Time/grid (s)', 'Time/clf (s)']))
+    print(tabulate([[m.__class__.__name__, '%.3f'%s, '%.0f'%time_grid, '%.3f'%time_fit] for m, s, time_grid, time_fit in res], headers=['Model', scoring, 'Time/grid (s)', 'Time/clf (s)']))
     winner_ind = np.argmax([v[1] for v in res])
     winner = res[winner_ind][0]
     print('='*72)

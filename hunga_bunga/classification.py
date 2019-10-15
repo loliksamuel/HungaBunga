@@ -351,7 +351,7 @@ if __name__ == '__main__':
     # size_output     = len(names_output)
     # use_raw_data    = True
     # use_feature_tool= False
-
+    #
     # data_path_all = path.join('files', 'input', f'{data_type}')
     # if (use_raw_data):
     #     print(f'Loading from disc raw data   ')
@@ -378,6 +378,11 @@ if __name__ == '__main__':
     # print(f'df_y.describe()=\n{df_y.describe()}')
     # print(f'\ndf_y[5]={df_y.shape}\n',df_y.head(5))
     # print(f'\ndf_x[1]={df_x.shape}\n',df_x.head(1))
+    # X, y = df_x, df_y
+
+    iris = datasets.load_iris()
+    X, y = iris.data, iris.target
+
     test_size  = 0.2
     brain      =True
     small      =False
@@ -386,9 +391,7 @@ if __name__ == '__main__':
     scoring    =None
     verbose    =False#if True#sklearn.exceptions.NotFittedError: This Perceptron instance is not fitted yet
     n_splits   =2
-    iris = datasets.load_iris()
-    X, y = iris.data, iris.target
-    # X, y = df_x, df_y
+
     clf = HungaBungaClassifier( brain      =brain
                                ,small      =small
                                ,normalize_x=normalize_x
@@ -405,15 +408,15 @@ if __name__ == '__main__':
     print(f'brain      ={brain}  \nsmall      ={small} \nnormalize_x={normalize_x}  \nupsample   ={upsample} \nscoring    ={scoring}  \nverbose    ={verbose} \nn_splits   ={n_splits} \ntest_size  ={test_size}')
     ''' 
     ========================================================================
-    Model large                    accuracy    Time/grid (s)    Time/clf (s)
+    Model   large                  accuracy    Time/grid (s)    Time/clf (s)
     ---------------------------  ----------  ---------------  --------------
-    SGDClassifier                     1                3.122           0.003
-    LogisticRegression                0.9              0.248           0.001
-    Perceptron                        0.933            3.793           0.003
-    PassiveAggressiveClassifier       0.95             0.291           0.003
-    DecisionTreeClassifier            1                1.4             0.001
+    SGDClassifier                     0.523               79           0.147
+    LogisticRegression                0.515              210           0.622
+    Perceptron                        0.525              103           0.181
+    PassiveAggressiveClassifier       0.523               10           0.060
+    DecisionTreeClassifier            0.529              375           0.014
     ========================================================================
-    The winner is: SGDClassifier with score 1.000.
+    The winner is: DecisionTreeClassifier with score 0.529.
     
     
      
