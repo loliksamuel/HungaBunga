@@ -899,14 +899,14 @@ def feature_tool(df_x):
     primitives_where          = ['std', 'min', 'max', 'mean', 'count']
     primitives_groupby        = ['cum_sum', 'cum_count', 'cum_mean', 'cum_min', 'cum_max'] #group by id  # [1, 2, 3, 4, 5]).tolist() = [1, 3, 6, 10, 15]
     primitives_transform      = [#'add_numeric'       #Element-wise       addition of 2 lists. create 283/2*283 = 40,044 new features
-                                    MultiplyNumeric
-                                , ModuloNumeric
+                               #   MultiplyNumeric
+                               # , ModuloNumeric
                                #, 'multiply_numeric'  #Element-wise multiplication of 2 lists. create 283/2*283 = 40,044 new features
                                # 'subtract_numeric'  #Element-wise subtraction    of 2 lists. create 283/2*283 = 40,044 new features
                                # , 'modulo_numeric'    #Element-wise modulo         of 2 lists. create 283/2*283 = 40,044 new features
                                #, 'and'               #Element-wise logical AND    of 2 lists. create 283/2*283 = 40,044 new features
                                #, 'or'                #Element-wise logical OR     of 2 lists. create 283/2*283 = 40,044 new features
-                               , 'absolute', 'percentile'#, 'cum_count', 'cum_sum', 'cum_mean', 'cum_min', 'cum_max', 'cum_mean'
+                                'absolute', 'percentile'#, 'cum_count', 'cum_sum', 'cum_mean', 'cum_min', 'cum_max', 'cum_mean'
                                  ]
     # 'absolute','percentile', 'cum_count', 'cum_sum', 'cum_mean', 'cum_min', 'cum_max', 'cum_mean', 'subtract', 'divide','time_since_previous', 'latitude', 'longitude', isin is_null is_weekend year week log]
     # Run deep feature synthesis with transformation primitives

@@ -345,47 +345,47 @@ class HungaBungaRandomClassifier(ClassifierMixin):
 
 
 if __name__ == '__main__':
-    #warnings.warn = warn
-    # data_type       = 'spy283' #spy71  spy283   spyp71  spyp283  iris  random
-    # names_output    = ['Green bar', 'Red Bar']
-    # size_output     = len(names_output)
-    # use_raw_data    = True
-    # use_feature_tool= False
-    #
-    # data_path_all = path.join('files', 'input', f'{data_type}')
-    # if (use_raw_data):
-    #     print(f'Loading from disc raw data   ')
-    #     df_x, df_y = data_prepare(data_type=data_type, use_feature_tool=use_feature_tool)
-    #
-    #     if isinstance(df_x,  pd.DataFrame):
-    #         df_x.to_csv( f'{data_path_all}_x_{use_feature_tool}.csv', index=False, header=True)
-    #         df_y.to_csv( f'{data_path_all}_y_{use_feature_tool}.csv', index=False, header=True)
-    #
-    # else:
-    #     print(f'Loading from disc prepared data :{data_path_all + "_x.csv"} ')
-    #     df_x = pd.read_csv(f'{data_path_all}_x_{use_feature_tool}.csv')
-    #     df_y = pd.read_csv(f'{data_path_all}_y_{use_feature_tool}.csv')
-    #
-    # if isinstance(df_y,  pd.DataFrame):
-    #     names_output = df_y['target'].unique()
-    # else:
-    #     names_output = pd.Series(df_y, name='target').unique()#df_y.unique()#list(iris.target_names)
-    # names_input  = df_x.columns.tolist()
-    # names_input  = list(map(str, names_input))
-    # size_input   = len(names_input)
-    # size_output  = len(names_output)
-    # print(f'#features={size_input}, out={size_output}, names out={names_output }')
-    # print(f'df_y.describe()=\n{df_y.describe()}')
-    # print(f'\ndf_y[5]={df_y.shape}\n',df_y.head(5))
-    # print(f'\ndf_x[1]={df_x.shape}\n',df_x.head(1))
-    # X, y = df_x, df_y
+    ##warnings.warn = warn
+    data_type       = 'spy283' #spy71  spy283   spyp71  spyp283  iris  random
+    names_output    = ['Green bar', 'Red Bar']
+    size_output     = len(names_output)
+    use_raw_data    = True
+    use_feature_tool= True
 
-    iris = datasets.load_iris()
-    X, y = iris.data, iris.target
+    data_path_all = path.join('files', 'input', f'{data_type}')
+    if (use_raw_data):
+        print(f'Loading from disc raw data   ')
+        df_x, df_y = data_prepare(data_type=data_type, use_feature_tool=use_feature_tool)
+
+        if isinstance(df_x,  pd.DataFrame):
+            df_x.to_csv( f'{data_path_all}_x_{use_feature_tool}.csv', index=False, header=True)
+            df_y.to_csv( f'{data_path_all}_y_{use_feature_tool}.csv', index=False, header=True)
+
+    else:
+        print(f'Loading from disc prepared data :{data_path_all + "_x.csv"} ')
+        df_x = pd.read_csv(f'{data_path_all}_x_{use_feature_tool}.csv')
+        df_y = pd.read_csv(f'{data_path_all}_y_{use_feature_tool}.csv')
+
+    if isinstance(df_y,  pd.DataFrame):
+        names_output = df_y['target'].unique()
+    else:
+        names_output = pd.Series(df_y, name='target').unique()#df_y.unique()#list(iris.target_names)
+    names_input  = df_x.columns.tolist()
+    names_input  = list(map(str, names_input))
+    size_input   = len(names_input)
+    size_output  = len(names_output)
+    print(f'#features={size_input}, out={size_output}, names out={names_output }')
+    print(f'df_y.describe()=\n{df_y.describe()}')
+    print(f'\ndf_y[5]={df_y.shape}\n',df_y.head(5))
+    print(f'\ndf_x[1]={df_x.shape}\n',df_x.head(1))
+    X, y = df_x, df_y
+
+    # iris = datasets.load_iris()
+    # X, y = iris.data, iris.target
 
     test_size  = 0.2
     brain      =True
-    small      =False
+    small      =True
     normalize_x=True
     upsample   =True
     scoring    =None
@@ -410,34 +410,34 @@ if __name__ == '__main__':
     ========================================================================
     Model   large                  accuracy    Time/grid (s)    Time/clf (s)
     ---------------------------  ----------  ---------------  --------------
-    SGDClassifier                     0.523               79           0.147
-    LogisticRegression                0.515              210           0.622
-    Perceptron                        0.525              103           0.181
-    PassiveAggressiveClassifier       0.523               10           0.060
-    DecisionTreeClassifier            0.529              375           0.014
+    SGDClassifier                     0.523              202           3.052
+    LogisticRegression                0.487             1013           2.13
+    Perceptron                        0.523              308           0.436
+    PassiveAggressiveClassifier       0.518               20           0.182
+    DecisionTreeClassifier            0.529             1154           0.027
     ========================================================================
-    The winner is: DecisionTreeClassifier with score 0.529.
+    The winner is: DecisionTreeClassifier with score 0.529. 
     
     
      
     ========================================================================
-    Model small                   accuracy    Time/grid (s)    Time/clf (s)
+    Model                          accuracy    Time/grid (s)    Time/clf (s)
     ---------------------------  ----------  ---------------  --------------
-    SGDClassifier                     0.521            4.806           0.003
-    LogisticRegression                0.521            0.374           0.001
-    Perceptron                        0.521            4.218           0.005
-    PassiveAggressiveClassifier       0.521            0.51            0.003
-    MLPClassifier                     0.522            2.065           0.098
-    GaussianProcessClassifier         0.520            9.41            0.801
-    KMeans                            0.481            0.429           0.048
-    KNeighborsClassifier              0.491           11.478           0.001
-    NearestCentroid                   0.501            0.202           0.001
-    RadiusNeighborsClassifier         0.521           21.517           0.003
-    RandomForestClassifier            0.512           29.453           0.007
-    DecisionTreeClassifier            0.505            0.218           0.001
-    ExtraTreesClassifier              0.520           20.067           0.024
+    SGDClassifier                     0.523              183           0.432
+    LogisticRegression                0.465             1014           2.149
+    Perceptron                        0.523              319           0.475
+    PassiveAggressiveClassifier       0.514               20           0.182
+    MLPClassifier                     0.498              100           2.264
+    GaussianProcessClassifier         0.523            58071          651.76
+    KMeans                            0.507               22           1.712
+    KNeighborsClassifier              0.471            42346           0.648
+    NearestCentroid                   0.515               11           0.182
+    RadiusNeighborsClassifier         0.009            17416           0.887
+    RandomForestClassifier            0.524             3054           0.175
+    DecisionTreeClassifier            0.526               60           0.034
+    ExtraTreesClassifier              0.523             1477           0.832
     ========================================================================
-    The winner is: PassiveAggressiveClassifier with score 1.000.
+    The winner is: DecisionTreeClassifier with score 0.526.
     '''
 
 
