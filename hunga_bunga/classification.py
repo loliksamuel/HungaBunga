@@ -47,21 +47,21 @@ from params import *
 
 
 
-linear_models_n_params = [
-    (SGDClassifier,
-     {'loss'   : ['hinge', 'log', 'modified_huber', 'squared_hinge'],
-      'alpha'  : [0.0001, 0.001, 0.1],
-      'penalty': penalty_12none
+models_n_params_linear = [
+    (SGDClassifier,{
+       'penalty': penalty_12none
+      ,'loss'   : ['hinge', 'log', 'modified_huber', 'squared_hinge']
+      ,'alpha'  : [0.00001, 0.001, 10],
       })
       ,
 
     (LogisticRegression,
-     {'penalty': penalty_12, 'max_iter': max_iter, 'tol': tol,  'warm_start': warm_start, 'C':C, 'solver': ['liblinear']
+     {'penalty': penalty_12, 'max_iter': max_iter, 'warm_start': warm_start, 'tol': tol, 'C':C, 'solver': ['liblinear']
       })
       ,
 
     (Perceptron,
-     {'penalty': penalty_all, 'alpha': alpha, 'max_iter': n_iter, 'n_iter_no_change':[10], 'eta0': eta0, 'warm_start': warm_start
+     {'penalty': penalty_all, 'max_iter': n_iter, 'warm_start': warm_start, 'alpha': alpha, 'n_iter_no_change':[20], 'eta0': eta0
       })
       ,
 
@@ -73,9 +73,9 @@ linear_models_n_params = [
       })
 ]
 
-linear_models_n_params_small = linear_models_n_params
+models_n_params_linear_small = models_n_params_linear
 
-svm_models_n_params = [
+models_n_params_svm = [
     #error: very slow
     # (SVC,
     #  {'C':C, 'kernel': kernel, 'degree': degree, 'gamma': gamma, 'coef0': coef0, 'shrinking': shrinking, 'tol': tol, 'max_iter': max_iter_inf2})
@@ -95,7 +95,7 @@ svm_models_n_params = [
     #    })
 ]
 
-svm_models_n_params_small = [
+models_n_params_svm_small = [
     #  (SVC,
     #   {   'C'       :C
     #   , 'tol'       : tol
@@ -121,11 +121,13 @@ svm_models_n_params_small = [
     #    })
 ]
 
-neighbor_models_n_params = [
+models_n_params_neighbor = [
 
     (KMeans,
-     {'algorithm'   : ['auto', 'full', 'elkan'],
-      'init'        : ['k-means++', 'random']})
+     {'algorithm'   : ['auto', 'full', 'elkan']
+     ,'init'        : ['k-means++', 'random']
+     ,'n_clusters'  : [2]
+      })
     ,
 
     (KNeighborsClassifier,
@@ -133,13 +135,13 @@ neighbor_models_n_params = [
        , 'weights'    : ['uniform', 'distance']
        , 'algorithm'  : neighbor_algo
        , 'leaf_size'  : neighbor_leaf_size
-       , 'p'          : [1, 2]
+       , 'p'          : [1, 4]
        , 'n_neighbors': n_neighbors
       })
     ,
     (NearestCentroid,
      {  'metric'          : neighbor_metric
-      , 'shrink_threshold': [1e-3, 1e-2, 0.1, 0.5, 0.9, 2]
+      , 'shrink_threshold': [1e-4, 1e-2, 0.1, 0.5, 1.9, 20]
       })
     ,
     (RadiusNeighborsClassifier,
@@ -154,21 +156,21 @@ neighbor_models_n_params = [
       })
 ]
 
-gaussianprocess_models_n_params = [
+models_n_params_gaussian = [
     (GaussianProcessClassifier,
      {'warm_start'          : warm_start,
       'kernel'              : [RBF(), ConstantKernel(), DotProduct(), WhiteKernel()],
-      'max_iter_predict'    : [500],
-      'n_restarts_optimizer': [3],
+      'max_iter_predict'    : [200],
+      'n_restarts_optimizer': [6],
       })
 ]
 
 
-bayes_models_n_params = [
+models_n_params_bayes = [
     (GaussianNB, {})
 ]
 
-nn_models_n_params = [
+models_n_params_nn = [
     #error: very slow
     # (MLPClassifier,
     #  { 'hidden_layer_sizes': [(16,), (64,), (100,), (32, 32)],
@@ -184,7 +186,7 @@ nn_models_n_params = [
     #    })
 ]
 
-nn_models_n_params_small = [
+models_n_params_nn_small = [
     (MLPClassifier,
      { 'hidden_layer_sizes' : [(64,), (32, 64)],
        'batch_size'         : ['auto', 50],
@@ -195,7 +197,7 @@ nn_models_n_params_small = [
        })
 ]
 
-tree_models_n_params = [
+models_n_params_tree = [
     #error: very slow
     # (RandomForestClassifier,
     #  {
@@ -233,7 +235,7 @@ tree_models_n_params = [
     #      , 'criterion'              : ['gini', 'entropy']})
 ]
 
-tree_models_n_params_small = [
+models_n_params_tree_small = [
 
     (RandomForestClassifier,
      { 'max_features'      : max_features_small
@@ -263,19 +265,20 @@ tree_models_n_params_small = [
 
 #@ignore_warnings
 def run_all_classifiers(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True):
-    all_params =    (   linear_models_n_params_small if small else linear_models_n_params) \
-                  + (       nn_models_n_params_small if small else     nn_models_n_params) \
-                  + (gaussianprocess_models_n_params if small else []) \
-                  + (       neighbor_models_n_params if small else []) \
-                  + (      svm_models_n_params_small if small else    svm_models_n_params) \
-                  + (     tree_models_n_params_small if small else   tree_models_n_params)
+    #all_params =   models_n_params_gaussian     + models_n_params_neighbor
+    all_params =    (models_n_params_linear_small if small else models_n_params_linear) \
+                  + (models_n_params_nn_small     if small else models_n_params_nn) \
+                  + (models_n_params_gaussian     if small else []) \
+                  + (models_n_params_neighbor     if small else []) \
+                  + (models_n_params_svm_small    if small else models_n_params_svm) \
+                  + (models_n_params_tree_small   if small else models_n_params_tree)
     return main_loop(  all_params
                      , StandardScaler().fit_transform(x) if normalize_x else x#MinMaxScaler().fit_transform(x)
                      , y
                      , isClassification=True, n_jobs=n_jobs, verbose=verbose, brain=brain, test_size=test_size, n_splits=n_splits, upsample=upsample, scoring=scoring, grid_search=grid_search)
 
 def run_one_classifier(x, y, small = True, normalize_x = True, n_jobs=cpu_count()-1, brain=False, test_size=0.2, n_splits=5, upsample=True, scoring=None, verbose=False, grid_search=True):
-    all_params = (linear_models_n_params_small if small else linear_models_n_params) +  (nn_models_n_params_small if small else nn_models_n_params) + ([] if small else gaussianprocess_models_n_params) + neighbor_models_n_params + (svm_models_n_params_small if small else svm_models_n_params) + (tree_models_n_params_small if small else tree_models_n_params)
+    all_params = (models_n_params_linear_small if small else models_n_params_linear) + (models_n_params_nn_small if small else models_n_params_nn) + ([] if small else models_n_params_gaussian) + models_n_params_neighbor + (models_n_params_svm_small if small else models_n_params_svm) + (models_n_params_tree_small if small else models_n_params_tree)
     all_params = random.choice(all_params)
     return all_params[0](**(list(ParameterSampler(all_params[1], n_iter=1))[0]))
 
@@ -383,14 +386,14 @@ if __name__ == '__main__':
     # iris = datasets.load_iris()
     # X, y = iris.data, iris.target
 
-    test_size  = 0.2
+    test_size  = 0.3
+    n_splits   =2
+    small      =False
     brain      =True
-    small      =True
     normalize_x=True
     upsample   =True
     scoring    =None
     verbose    =False#if True#sklearn.exceptions.NotFittedError: This Perceptron instance is not fitted yet
-    n_splits   =2
 
     clf = HungaBungaClassifier( brain      =brain
                                ,small      =small
@@ -421,7 +424,7 @@ if __name__ == '__main__':
     
      
     ========================================================================
-    Model                          accuracy    Time/grid (s)    Time/clf (s)
+    Model  small                   accuracy    Time/grid (s)    Time/clf (s)
     ---------------------------  ----------  ---------------  --------------
     SGDClassifier                     0.523              183           0.432
     LogisticRegression                0.465             1014           2.149
