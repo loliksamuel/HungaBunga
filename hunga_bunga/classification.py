@@ -17,6 +17,11 @@ from os import path
 import pandas as pd
 import random
 from utils import data_prepare
+from quilt.data.ResidentMario import *
+import pandas_profiling
+
+import missingno as msno
+#%matplotlib inline
 from sklearn import datasets
 from sklearn.linear_model import SGDClassifier, LogisticRegression, Perceptron, PassiveAggressiveClassifier
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
@@ -349,7 +354,7 @@ class HungaBungaRandomClassifier(ClassifierMixin):
 
 if __name__ == '__main__':
     ##warnings.warn = warn
-    data_type       = 'spy283' #spy71  spy283   spyp71  spyp283  iris  random
+    data_type       = 'iris' #spy71  spy283   spyp71  spyp283  iris  random
     names_output    = ['Green bar', 'Red Bar']
     size_output     = len(names_output)
     use_raw_data    = True
@@ -383,9 +388,21 @@ if __name__ == '__main__':
     print(f'\ndf_x[1]={df_x.shape}\n',df_x.head(1))
     X, y = df_x, df_y
 
-    # iris = datasets.load_iris()
-    # X, y = iris.data, iris.target
+    #iris = datasets.load_iris()
+    #X, y = iris.data, iris.target
 
+    #collisions = missingno_data.nyc_collision_factors()
+    #X = X.replace("nan", np.nan)
+    #msno.matrix(X.sample(250))
+    # print('preparing Pandas Profiling Report.html')
+    # df = pd.DataFrame(
+    #     np.random.rand(100, 5),
+    #     columns=['a', 'b', 'c', 'd', 'e']
+    # )
+    # profile = df.profile_report()
+    #df.profile_report(style={'full_width':True})
+    #profile = X.profile_report(title='Pandas Profiling Report')
+    #profile.to_file(output_file="output.html")#path.join('files', 'output', 'Pandas Profiling Report.html'))
     test_size  = 0.3
     n_splits   =2
     small      =False

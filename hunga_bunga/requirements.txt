@@ -1,0 +1,11 @@
+scipy
+requests
+missingno>=0.4.2
+matplotlib
+jinja2
+numpy
+pandas
+htmlmin
+phik
+confuse>=1.0.0
+astropy
